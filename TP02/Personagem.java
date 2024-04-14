@@ -23,7 +23,17 @@ class Personagem {
     private boolean wizard;
 
     DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    int contador = 0; 
+    DateTimeFormatter data(String s){
+        DateTimeFormatter dataFormat;
+        dataFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        
+        if(s.charAt(1) == '-'){
+            dataFormat = DateTimeFormatter.ofPattern("d-MM-yyyy");
+        }else if(s.charAt(4) == '-'){
+            dataFormat = DateTimeFormatter.ofPattern("dd-M-yyyy");
+        }
+        return dataFormat;
+    }
 
     public Personagem(String id){
         ler(id);
@@ -62,7 +72,7 @@ class Personagem {
         return resp;
     }
     public String lerArquivo(String s){
-        Arq.openRead("characters.csv");
+        Arq.openRead("/tmp/characters.csv");
         String resp = "";
         String raw[] = new String[405];
         for(int i = 0; i < 405; i++){
@@ -101,7 +111,7 @@ class Personagem {
         setHogwartsStudent(entrada[8]);
         setActorName(entrada[9]);
         setAlive(toBoolean(entrada[10]));
-        setDateOfBirth(LocalDate.parse(entrada[12], dataFormat));
+        setDateOfBirth(LocalDate.parse(entrada[12], data(entrada[12])));
         setYearOfBirth(toInt(entrada[13]));
         setEyeColour(entrada[14]);
         setGender(entrada[15]);
@@ -228,16 +238,48 @@ class Personagem {
 
     public static void main(String[] args) {
         int fim = 0;
-        String entrada = "";
-        while (fim == 0) {
-            entrada = MyIO.readLine();
+        String entrada = MyIO.readLine();
+        Personagem p = new Personagem(entrada);
+        while(fim == 0) {
             if(isFIM(entrada))//se a entrada for fim, sai do loop e termina o programa
-            fim = 1;
-            else
-            Personagem p = new Personagem(entrada);
-            p.imprimir();
+                fim = 1;
+            else{
+                p = new Personagem(entrada);
+                p.imprimir();
+                entrada = MyIO.readLine();
+            }
         }
         
         
     }
 }
+/*
+ * 9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8
+1413e1b3-2903-4a47-a2d5-e8abc5ce8014
+ca3827f0-375a-4891-aaa5-f5e8a5bad225
+36bfefd0-e0bb-4d11-be98-d1ef6117a77a
+20354d7a-e4fe-47af-8ff6-187bca92f3f9
+57fe29d4-312a-4711-bd9a-c320253d9176
+b415c867-1cff-455e-b194-748662ac2cca
+5a4c95db-947d-4914-a631-41e8d466328e
+861c4cde-2f0f-4796-8d8f-9492e74b2573
+2cfd2d4b-5d1e-4dc5-8837-37a97c7e2f2f
+41cd0bbe-a943-431b-9bde-bb2cad3491a1
+2a0615de-8aa4-41e7-9504-dd875f5f3f01
+11b5ca88-64ad-41a4-9f36-317b66c290af
+eaea5eb3-48a3-41c6-9ea5-c695299bab16
+0d8ea37f-35c4-4c7d-9dd2-8ccd96b0a2b3
+b0620914-858d-46fc-8e6d-033c565e138b
+6b59be3f-e527-422d-959d-79fcdb3b24eb
+fed624df-56d9-495e-9ad4-ea77000957e8
+d58e7249-19d1-40bd-a43f-1da0497fe8aa
+3a0fe4df-2e40-4541-8d7f-13586f0b9294
+6afb1960-febd-418d-b604-e50c1b59459b
+efa802c8-ae18-4ae1-a524-49df21d05939
+933787c2-51e3-4eac-8a85-ab332cac0456
+94c993f6-a443-4408-b908-6e78e223e8ac
+00434cd3-fcc7-44c7-8f98-7368415b4206
+7614cf6e-689e-47ac-a976-b1e9997637e9
+d59691a4-f830-4eb0-a819-a0fb00b7e80f
+FIM
+ */
