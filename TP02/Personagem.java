@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 class Personagem {
@@ -13,7 +15,7 @@ class Personagem {
     private String hogwartsStudent;
     private String actorName;
     private boolean alive;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private int yearOfBirth;
     private String eyeColour;
     private String gender;
@@ -21,8 +23,78 @@ class Personagem {
     private boolean wizard;
 
     public Personagem(){
-
+        ler();
     }
+    
+    public Personagem(String id, String name, String[] alternateNames, String house, String ancestry, String species,
+            String patronus, boolean hogwartsStaff, String hogwartsStudent, String actorName, boolean alive,
+            LocalDate dateOfBirth, int yearOfBirth, String eyeColour, String gender, String hairColour, boolean wizard) {
+        this.id = id;
+        this.name = name;
+        this.alternateNames = alternateNames;
+        this.house = house;
+        this.ancestry = ancestry;
+        this.species = species;
+        this.patronus = patronus;
+        this.hogwartsStaff = hogwartsStaff;
+        this.hogwartsStudent = hogwartsStudent;
+        this.actorName = actorName;
+        this.alive = alive;
+        this.dateOfBirth = dateOfBirth; 
+        this.yearOfBirth = yearOfBirth;
+        this.eyeColour = eyeColour;
+        this.gender = gender;
+        this.hairColour = hairColour;
+        this.wizard = wizard;
+    }
+    public boolean toBoolean(String s){
+        return s.equals("true");
+    }
+    public int toInt(String s){
+        int resp = 0;
+        //int decimal = (int)Math.pow(10, (double)s.length());
+        for(int i = 0; i < s.length(); i++){
+            resp += ((int)(s.charAt(i) - 48))*((int)Math.pow(10, (double)s.length()));
+        }
+        return resp;
+    }
+    public void ler(){
+        Arq.openRead("characters.csv");
+        String raw = Arq.readLine();
+        raw = Arq.readLine();
+        String entrada[] = raw.split(";");
+        entrada[2] = entrada[2].replace("[", "");
+        entrada[2] = entrada[2].replace("]", "");
+        entrada[2] = entrada[2].replaceAll("'", "");
+        entrada[2] = entrada[2].replaceAll(", ", ",");
+
+    
+        setId(entrada[0]);
+        setName(entrada[1]);
+        setAlternateNames(entrada[2].split(","));
+
+        setHouse(entrada[3]);
+        setAncestry(entrada[4]);
+        setSpecies(entrada[5]);
+        setPatronus(entrada[6]);
+        setHogwartsStaff(toBoolean(entrada[7]));
+        setHogwartsStudent(entrada[8]);
+        setActorName(entrada[9]);
+        setAlive(toBoolean(entrada[10]));
+        setDateOfBirth(LocalDate.parse(entrada[12], DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        setYearOfBirth(toInt(entrada[13]));
+        setEyeColour(entrada[14]);
+        setGender(entrada[15]);
+        setHairColour(entrada[16]);
+        setWizard(toBoolean(entrada[17]));
+        Arq.close();
+    }
+    public void imprimir(){
+        System.out.println("[" + id +" ## " + name +" ## " + alternateNames +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
+        + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth +" ## " 
+        + yearOfBirth +" ## " + eyeColour +" ## " + gender +" ## " + hairColour +" ## " + wizard + "]");
+    }
+
     public String getId() {
         return id;
     }
@@ -89,10 +161,10 @@ class Personagem {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
     public int getYearOfBirth() {
@@ -128,6 +200,7 @@ class Personagem {
 
 
     public static void main(String[] args) {
-        
+        Personagem teste = new Personagem();
+        teste.imprimir();
     }
 }
