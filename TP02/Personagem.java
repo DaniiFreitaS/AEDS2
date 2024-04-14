@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 
 class Personagem {
@@ -21,6 +22,8 @@ class Personagem {
     private String gender;
     private String hairColour;
     private boolean wizard;
+
+    DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public Personagem(){
         ler();
@@ -54,7 +57,7 @@ class Personagem {
         int resp = 0;
         //int decimal = (int)Math.pow(10, (double)s.length());
         for(int i = 0; i < s.length(); i++){
-            resp += ((int)(s.charAt(i) - 48))*((int)Math.pow(10, (double)s.length()));
+            resp = resp *10 + ((int)(s.charAt(i) - 48));
         }
         return resp;
     }
@@ -63,10 +66,13 @@ class Personagem {
         String raw = Arq.readLine();
         raw = Arq.readLine();
         String entrada[] = raw.split(";");
+        //formatacao de string
         entrada[2] = entrada[2].replace("[", "");
         entrada[2] = entrada[2].replace("]", "");
         entrada[2] = entrada[2].replaceAll("'", "");
         entrada[2] = entrada[2].replaceAll(", ", ",");
+
+        entrada[13] = entrada[13].replaceAll(" ", "");
 
     
         setId(entrada[0]);
@@ -81,7 +87,7 @@ class Personagem {
         setHogwartsStudent(entrada[8]);
         setActorName(entrada[9]);
         setAlive(toBoolean(entrada[10]));
-        setDateOfBirth(LocalDate.parse(entrada[12], DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        setDateOfBirth(LocalDate.parse(entrada[12], dataFormat));
         setYearOfBirth(toInt(entrada[13]));
         setEyeColour(entrada[14]);
         setGender(entrada[15]);
@@ -90,9 +96,14 @@ class Personagem {
         Arq.close();
     }
     public void imprimir(){
-        System.out.println("[" + id +" ## " + name +" ## " + alternateNames +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
-        + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth +" ## " 
+        System.out.println("[" + id +" ## " + name +" ## " + Arrays.toString(alternateNames) +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
+        + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth.format(dataFormat) +" ## " 
         + yearOfBirth +" ## " + eyeColour +" ## " + gender +" ## " + hairColour +" ## " + wizard + "]");
+    }
+
+    public Personagem clone(Personagem p){
+        return new Personagem(p.getId(), p.getName(), p.getAlternateNames(), p.getHouse(), p.getAncestry(), p.getSpecies(), p.getPatronus(), p.getHogwartsStaff(),
+         p.getHogwartsStudent(), p.getActorName(),p.getAlive(), p.getDateOfBirth(), p.getYearOfBirth(), p.getEyeColour(), p.getGender(), p.getHairColour(), p.getWizard());
     }
 
     public String getId() {
@@ -202,5 +213,6 @@ class Personagem {
     public static void main(String[] args) {
         Personagem teste = new Personagem();
         teste.imprimir();
+        
     }
 }
