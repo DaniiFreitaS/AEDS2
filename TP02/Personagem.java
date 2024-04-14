@@ -1,7 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 
 class Personagem {
 
@@ -24,9 +23,10 @@ class Personagem {
     private boolean wizard;
 
     DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    int contador = 0; 
 
-    public Personagem(){
-        ler();
+    public Personagem(String id){
+        ler(id);
     }
     
     public Personagem(String id, String name, String[] alternateNames, String house, String ancestry, String species,
@@ -61,10 +61,24 @@ class Personagem {
         }
         return resp;
     }
-    public void ler(){
+    public String lerArquivo(String s){
         Arq.openRead("characters.csv");
-        String raw = Arq.readLine();
-        raw = Arq.readLine();
+        String resp = "";
+        String raw[] = new String[405];
+        for(int i = 0; i < 405; i++){
+            raw[i] = Arq.readLine();
+        }
+        Arq.close();
+        for(int i = 1; i < 405; i++){
+            if (raw[i].contains(s)){
+                resp = raw[i];
+                i+=500;
+            }
+        }
+        return resp;
+    }
+    public void ler(String id){
+        String raw = lerArquivo(id);
         String entrada[] = raw.split(";");
         //formatacao de string
         entrada[2] = entrada[2].replace("[", "");
@@ -208,11 +222,22 @@ class Personagem {
     public void setWizard(boolean wizard) {
         this.wizard = wizard;
     }
-
+    static boolean isFIM(String s){
+        return (s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' && s.charAt(2) == 'M');
+    }
 
     public static void main(String[] args) {
-        Personagem teste = new Personagem();
-        teste.imprimir();
+        int fim = 0;
+        String entrada = "";
+        while (fim == 0) {
+            entrada = MyIO.readLine();
+            if(isFIM(entrada))//se a entrada for fim, sai do loop e termina o programa
+            fim = 1;
+            else
+            Personagem p = new Personagem(entrada);
+            p.imprimir();
+        }
+        
         
     }
 }
