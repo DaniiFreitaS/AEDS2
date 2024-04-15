@@ -27,13 +27,57 @@ void ImprimePersonagem(Personagem P) // declara o parâmetro como uma struct
    P.hogwartsStudent, P.actorName, P.alive, P.dateOfBirth, P.yearOfBirth, P.eyeColour, P.gender, P.hairColour, P.wizard);
 }
 
-void leEntrada(){
-
+void leEntrada(FILE *raw, Personagem P){
+    char* token;
+    char str[500];
+    fscanf(raw, " %[^\r\n]", str);
+    fscanf(raw, " %[^\r\n]", str);
+    // Divide a string usando a vírgula como delimitador
+    token = strtok(str, ";");
+    strcpy(P.id, token);
+    token = strtok(NULL, ";");
+    strcpy(P.nome, token);
+    token = strtok(NULL, ";");
+    strcpy(P.alternateNames, token);
+    token = strtok(NULL, ";");
+    strcpy(P.house, token);
+    token = strtok(NULL, ";");
+    strcpy(P.ancestry, token);
+    token = strtok(NULL, ";");
+    strcpy(P.species, token);
+    token = strtok(NULL, ";");
+    strcpy(P.patronus, token);
+    token = strtok(NULL, ";");
+    P.hogwartsStaff = 0;
+    token = strtok(NULL, ";");
+    strcpy(P.hogwartsStudent, token);
+    token = strtok(NULL, ";");
+    strcpy(P.actorName, token);
+    token = strtok(NULL, ";");
+    P.alive = 1;
+    token = strtok(NULL, ";");
+    //nao faz nada
+    token = strtok(NULL, ";");
+    strcpy(P.dateOfBirth, token);
+    token = strtok(NULL, ";");
+    P.yearOfBirth = 1980;
+    token = strtok(NULL, ";");
+    strcpy(P.eyeColour, token);
+    token = strtok(NULL, ";");
+    strcpy(P.gender, token);
+    token = strtok(NULL, ";");
+    strcpy(P.hairColour, token);
+    token = strtok(NULL, ";");
+    P.wizard = 1;
 }
 
 int main()
 {
+    FILE *arquivo = fopen("characters.csv", "r");
     Personagem P;
+    leEntrada(arquivo, P);
+    fclose(arquivo);
+    /*
     strcpy(P.id, "9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8");
     strcpy(P.nome, "Harry Potter");
     strcpy(P.alternateNames, "'The Boy Who Lived', 'The Chosen One', 'Undesirable No. 1', 'Potty'");
@@ -51,6 +95,7 @@ int main()
     strcpy(P.gender, "male");
     strcpy(P.hairColour, "black");
     P.wizard = 1;
+    */
     // chama a função que recebe a struct como parâmetro
     ImprimePersonagem(P);
    return 0;
