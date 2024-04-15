@@ -31,10 +31,14 @@ void leEntrada(FILE *raw, Personagem P){
     char* token;
     char str[500];
     fscanf(raw, " %[^\r\n]", str);
+    printf("%s\n", str);
     fscanf(raw, " %[^\r\n]", str);
+    printf("%s\n", str);
     // Divide a string usando a vírgula como delimitador
-    token = strtok(str, ";");
+    token = strtok(str, ";");//erro aqui
+    printf("%s\n", str);
     strcpy(P.id, token);
+    
     token = strtok(NULL, ";");
     strcpy(P.nome, token);
     token = strtok(NULL, ";");
