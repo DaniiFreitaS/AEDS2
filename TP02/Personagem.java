@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Scanner;
 
 class Personagem {
 
@@ -61,18 +62,20 @@ class Personagem {
         this.wizard = wizard;
     }
     public boolean toBoolean(String s){
-        return s.equals("true");
+        return s.equals("VERDADEIRO");
+    }
+    public String booleanToString(boolean b){
+        return b ? "true" : "false";
     }
     public int toInt(String s){
         int resp = 0;
-        //int decimal = (int)Math.pow(10, (double)s.length());
         for(int i = 0; i < s.length(); i++){
             resp = resp *10 + ((int)(s.charAt(i) - 48));
         }
         return resp;
     }
     public String lerArquivo(String s){
-        Arq.openRead("characters.csv");
+        Arq.openRead("/tmp/characters.csv");
         String resp = "";
         String raw[] = new String[405];
         for(int i = 0; i < 405; i++){
@@ -108,7 +111,7 @@ class Personagem {
         setSpecies(entrada[5]);
         setPatronus(entrada[6]);
         setHogwartsStaff(toBoolean(entrada[7]));
-        setHogwartsStudent(entrada[8]);
+        setHogwartsStudent(booleanToString(toBoolean(entrada[8])));
         setActorName(entrada[9]);
         setAlive(toBoolean(entrada[10]));
         setDateOfBirth(LocalDate.parse(entrada[12], data(entrada[12])));
@@ -117,10 +120,11 @@ class Personagem {
         setGender(entrada[15]);
         setHairColour(entrada[16]);
         setWizard(toBoolean(entrada[17]));
-        Arq.close();
+        //Arq.close();
+        
     }
     public void imprimir(){
-        System.out.println("[" + id +" ## " + name +" ## " + Arrays.toString(alternateNames) +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
+        System.out.println("[" + id +" ## " + name +" ## " + Arrays.toString(alternateNames).replace("[", "{").replace("]", "}") +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
         + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth.format(dataFormat) +" ## " 
         + yearOfBirth +" ## " + eyeColour +" ## " + gender +" ## " + hairColour +" ## " + wizard + "]");
     }
@@ -238,18 +242,19 @@ class Personagem {
 
     public static void main(String[] args) {
         int fim = 0;
-        String entrada = MyIO.readLine();
-        Personagem p = new Personagem(entrada);
+        Scanner sc = new Scanner(System.in);
+        String entrada = null;
+        Personagem p = null;
         while(fim == 0) {
-            if(isFIM(entrada))//se a entrada for fim, sai do loop e termina o programa
+            entrada = sc.nextLine();
+            if(isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
                 fim = 1;
-            else{
+                sc.close();
+            }else{
                 p = new Personagem(entrada);
                 p.imprimir();
-                entrada = MyIO.readLine();
             }
         }
-        
         
     }
 }
@@ -282,4 +287,13 @@ efa802c8-ae18-4ae1-a524-49df21d05939
 7614cf6e-689e-47ac-a976-b1e9997637e9
 d59691a4-f830-4eb0-a819-a0fb00b7e80f
 FIM
+00434cd3-fcc7-44c7-8f98-7368415b4206;Miriam Strout;[];Gryffindor;half-blood;human;;FALSO;FALSO;;VERDADEIRO;[];27-03-1960;1954;blue;female;silver;VERDADEIRO
+9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8;Harry Potter;;Gryffindor;half-blood;human;stag;FALSO;VERDADEIRO;Daniel Radcliffe;VERDADEIRO;[];31-07-1980;1980;green;male;black;VERDADEIRO
+20354d7a-e4fe-47af-8ff6-187bca92f3f9;Pandora Lovegood;[];Ravenclaw;quarter-veela;human;;FALSO;FALSO;;FALSO;[];31-12-1926;1959;dark;female;white;VERDADEIRO
+while (fim == 0) {
+            teste = sc.nextLine();
+            if(isFIM(teste)){
+                fim = 1;
+            }
+        }
  */
