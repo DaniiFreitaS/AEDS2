@@ -75,7 +75,7 @@ class Personagem {
         return resp;
     }
     public String lerArquivo(String s){
-        Arq.openRead("/tmp/characters.csv");
+        Arq.openRead("characters.csv");
         String resp = "";
         String raw[] = new String[405];
         for(int i = 0; i < 405; i++){

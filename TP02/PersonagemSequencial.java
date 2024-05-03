@@ -36,6 +36,8 @@ class Personagem {
         return dataFormat;
     }
 
+    public Personagem(){}
+
     public Personagem(String id){
         ler(id);
     }
@@ -240,20 +242,23 @@ class Personagem {
         return (s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' && s.charAt(2) == 'M');
     }
 
+}
+
+public class PersonagemSequencial {
     public static void main(String[] args) {
         int fim = 0;
         Scanner sc = new Scanner(System.in);
         String entrada = null;
-        Personagem p[] = new Personagem[405];
+        Personagem[] p = new Personagem[10];
         int i = 0, max = 0;
         while(fim == 0) {
             entrada = sc.nextLine();
-            if(isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
+            if(Personagem.isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
                 fim = 1;
-                sc.close();
+                //sc.close();
             }else{
                 p[i] = new Personagem(entrada);
-                //p[i].imprimir();
+                p[i].imprimir();
             }
             i++;
         }
@@ -262,7 +267,7 @@ class Personagem {
         i = 0;
         while(fim == 0) {
             entrada = sc.nextLine();
-            if(isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
+            if(Personagem.isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
                 fim = 1;
                 sc.close();
             }else{
@@ -275,10 +280,12 @@ class Personagem {
                     }
                     i++;
                 }
+                i=0;
             }
         }
         
     }
+    
 }
 /*
  * 9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8
