@@ -244,7 +244,7 @@ class Personagem {
 
 }
 
-public class PersonagemSequencial {
+public class PersonagemSelecao {
     public static void main(String[] args) {
         int fim = 0;
         Scanner sc = new Scanner(System.in);
