@@ -3,7 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
 
-class Personagem {
+public class Personagem {
 
     private String id;
     private String name;
@@ -35,8 +35,6 @@ class Personagem {
         }
         return dataFormat;
     }
-
-    public Personagem(){}
 
     public Personagem(String id){
         ler(id);
@@ -76,8 +74,15 @@ class Personagem {
         }
         return resp;
     }
+    public static int toIntS(String s){
+        int resp = 0;
+        for(int i = 0; i < s.length(); i++){
+            resp = resp *10 + ((int)(s.charAt(i) - 48));
+        }
+        return resp;
+    }
     public String lerArquivo(String s){
-        Arq.openRead("/tmp/characters.csv");
+        Arq.openRead("/tmp/characters.csv", "UTF-8");
         String resp = "";
         String raw[] = new String[405];
         for(int i = 0; i < 405; i++){
@@ -129,6 +134,14 @@ class Personagem {
         System.out.println("[" + id +" ## " + name +" ## " + Arrays.toString(alternateNames).replace("[", "{").replace("]", "}") +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
         + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth.format(dataFormat) +" ## " 
         + yearOfBirth +" ## " + eyeColour +" ## " + gender +" ## " + hairColour +" ## " + wizard + "]");
+    }
+    public void imprimirL(){
+        System.out.print("## " + id +" ## " + name +" ## " + Arrays.toString(alternateNames).replace("[", "{").replace("]", "}") +" ## " + house +" ## " + ancestry +" ## " + species +" ## " 
+        + patronus +" ## " + hogwartsStaff +" ## " + hogwartsStudent +" ## " + actorName +" ## " + alive +" ## " + dateOfBirth.format(dataFormat) +" ## " 
+        + yearOfBirth +" ## " + eyeColour +" ## " + gender +" ## " + hairColour +" ## " + wizard);
+    }
+    public void imprimirR(){
+        System.out.println("(R) "+name);
     }
 
     public Personagem clone(Personagem p){
@@ -242,55 +255,234 @@ class Personagem {
         return (s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' && s.charAt(2) == 'M');
     }
 
-}
-
-public class PersonagemSelecao {
-    public static void main(String[] args) {
-        int fim = 0;
+    public static void main(String[] args)  throws Exception{
+        int fim = 0, op = 0;
         Scanner sc = new Scanner(System.in);
         String entrada = null;
-        Personagem[] p = new Personagem[405];
-        int i = 0, max = 0, resp = 0;
+        String tmp = null;
+        Personagem p = null;
+        Lista persona = new Lista(405);
+        String raw[] = null;
         while(fim == 0) {
             entrada = sc.nextLine();
-            if(Personagem.isFIM(entrada)){//se a entrada for fim, sai do loop
+            if(isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
                 fim = 1;
                 //sc.close();
             }else{
-                p[i] = new Personagem(entrada);
-                //p[i].imprimir();
-                i++;
+                p = new Personagem(entrada);
+                //p.imprimir();
+                persona.inserirFim(p);
             }
-           // i++;
         }
-        fim = 0;
-        max = i;
-        i = 0;
-        while(fim == 0) {
+        op = sc.nextInt();
+        for(int i = 0; i <= op; i++){
             entrada = sc.nextLine();
-            if(Personagem.isFIM(entrada)){//se a entrada for fim, sai do loop e termina o programa
-                fim = 1;
-                sc.close();
-            }else{
-                for(i = 0; i < max; i++){
-                   if(entrada.compareTo(p[i].getName()) == 0){
-
-                   }else if (entrada.compareTo(p[i].getName()) < 0){
-
-                   }else if (entrada.compareTo(p[i].getName()) > 0){
-
-                   }
-                }
-                if(resp == 0){
-                    System.out.println("NAO");
-                }
-                i=0;
-                resp = 0;
+            raw = entrada.split(" ");
+            if(raw[0].equals("II")){
+                p = new Personagem(raw[1]);
+                persona.inserirInicio(p);
+            }else if(raw[0].equals("IF")){
+                p = new Personagem(raw[1]);
+                persona.inserirFim(p);
+            }else if(raw[0].equals("I*")){
+                p = new Personagem(raw[2]);
+                persona.inserir(p, toIntS(raw[1]));
+            }else if(raw[0].equals("R*")){
+                p = persona.remover(toIntS(raw[1]));
+                p.imprimirR();
+            }else if(raw[0].equals("RI")){
+                p = persona.removerInicio();
+                p.imprimirR();
+            }else if(raw[0].equals("RF")){
+                p = persona.removerFim();
+                p.imprimirR();
             }
         }
-        
+        persona.mostrar();
+        sc.close();
     }
-    
+}
+
+class Lista {
+   private Personagem[] array;
+   private int n;
+
+
+   /**
+    * Construtor da classe.
+    */
+   public Lista () {
+      this(6);
+   }
+
+
+   /**
+    * Construtor da classe.
+    * @param tamanho Tamanho da lista.
+    */
+   public Lista (int tamanho){
+      array = new Personagem[tamanho];
+      n = 0;
+   }
+
+
+   /**
+    * Insere um elemento na primeira posicao da lista e move os demais
+    * elementos para o fim da lista.
+    * @param x int elemento a ser inserido.
+    * @throws Exception Se a lista estiver cheia.
+    */
+   public void inserirInicio(Personagem x) throws Exception {
+
+      //validar insercao
+      if(n >= array.length){
+         throw new Exception("Erro ao inserir!");
+      } 
+
+      //levar elementos para o fim do array
+      for(int i = n; i > 0; i--){
+         array[i] = array[i-1];
+      }
+
+      array[0] = x;
+      n++;
+   }
+
+
+   /**
+    * Insere um elemento na ultima posicao da lista.
+    * @param x int elemento a ser inserido.
+    * @throws Exception Se a lista estiver cheia.
+    */
+   public void inserirFim(Personagem x) throws Exception {
+
+      //validar insercao
+      if(n >= array.length){
+         throw new Exception("Erro ao inserir!");
+      }
+
+      array[n] = x;
+      n++;
+   }
+
+
+   /**
+    * Insere um elemento em uma posicao especifica e move os demais
+    * elementos para o fim da lista.
+    * @param x int elemento a ser inserido.
+    * @param pos Posicao de insercao.
+    * @throws Exception Se a lista estiver cheia ou a posicao invalida.
+    */
+   public void inserir(Personagem x, int pos) throws Exception {
+
+      //validar insercao
+      if(n >= array.length || pos < 0 || pos > n){
+         throw new Exception("Erro ao inserir!");
+      }
+
+      //levar elementos para o fim do array
+      for(int i = n; i > pos; i--){
+         array[i] = array[i-1];
+      }
+
+      array[pos] = x;
+      n++;
+   }
+
+
+   /**
+    * Remove um elemento da primeira posicao da lista e movimenta 
+    * os demais elementos para o inicio da mesma.
+    * @return resp int elemento a ser removido.
+    * @throws Exception Se a lista estiver vazia.
+    */
+   public Personagem removerInicio() throws Exception {
+
+      //validar remocao
+      if (n == 0) {
+         throw new Exception("Erro ao remover!");
+      }
+
+      Personagem resp = array[0];
+      n--;
+
+      for(int i = 0; i < n; i++){
+         array[i] = array[i+1];
+      }
+
+      return resp;
+   }
+
+
+   /**
+    * Remove um elemento da ultima posicao da lista.
+    * @return resp int elemento a ser removido.
+    * @throws Exception Se a lista estiver vazia.
+    */
+   public Personagem removerFim() throws Exception {
+
+      //validar remocao
+      if (n == 0) {
+         throw new Exception("Erro ao remover!");
+      }
+
+      return array[--n];
+   }
+
+
+   /**
+    * Remove um elemento de uma posicao especifica da lista e 
+    * movimenta os demais elementos para o inicio da mesma.
+    * @param pos Posicao de remocao.
+    * @return resp int elemento a ser removido.
+    * @throws Exception Se a lista estiver vazia ou a posicao for invalida.
+    */
+   public Personagem remover(int pos) throws Exception {
+
+      //validar remocao
+      if (n == 0 || pos < 0 || pos >= n) {
+         throw new Exception("Erro ao remover!");
+      }
+
+      Personagem resp = array[pos];
+      n--;
+
+      for(int i = pos; i < n; i++){
+         array[i] = array[i+1];
+      }
+
+      return resp;
+   }
+
+
+   /**
+    * Mostra os elementos da lista separados por espacos.
+    */
+   public void mostrar (){
+      
+      for(int i = 0; i < n; i++){
+          System.out.print("[");
+          System.out.print(i + " ");
+          array[i].imprimirL();
+          System.out.println("]");
+      }
+      
+   }
+
+
+   /**
+    * Procura um elemento e retorna se ele existe.
+    * @param x int elemento a ser pesquisado.
+    * @return <code>true</code> se o array existir,
+    * <code>false</code> em caso contrario.
+    */
+   public boolean pesquisar(Personagem x) {
+      boolean retorno = false;
+      for (int i = 0; i < n && retorno == false; i++) {
+         retorno = (array[i] == x);
+      }
+      return retorno;
+   }
 }
 /*
  * 9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8
