@@ -327,16 +327,26 @@ class Pilha {
 	 * Mostra os elementos da lista separados por espacos.
 	 */
 	public void mostrar() {
-        int j = 0;
+        //int j = 0;
 		System.out.println("[ Top ]");
-		for (Celula i = primeiro.prox; i != null; i = i.prox, j++) {
-			System.out.print("[");
+        mostrarRec(primeiro.prox, tamanho());
+		//for (Celula i = primeiro.prox; i != null; i = i.prox, j++) {
+		//	System.out.print("[");
+        //    System.out.print(j +" ");
+        //    i.elemento.imprimirL();
+        //    System.out.println("] ");
+		//}
+		System.out.println("[ Bottom ]");
+	}
+    public void mostrarRec(Celula i, int j){
+        if(i!= null){
+            mostrarRec(i.prox, --j);
+            System.out.print("[");
             System.out.print(j +" ");
             i.elemento.imprimirL();
             System.out.println("] ");
-		}
-		System.out.println("[ Bottom ]");
-	}
+        }
+    }
 
 	/**
 	 * Procura um elemento e retorna se ele existe.

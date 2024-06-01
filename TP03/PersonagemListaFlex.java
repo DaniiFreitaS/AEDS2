@@ -428,11 +428,12 @@ class Lista {
 	 */
 	public void mostrar() {
         int j = 0;
-		System.out.print("[ ");
 		for (Celula i = primeiro.prox; i != null; i = i.prox, j++) {
-			System.out.print(j +""+ i.elemento + " ");
+			System.out.print("[");
+            System.out.print(j +" ");
+            i.elemento.imprimirL();
+            System.out.println("] ");
 		}
-		System.out.println("] ");
 	}
 
 	/**
@@ -463,7 +464,7 @@ class Lista {
    }
 }
 
-public class PersonagemFilaFlex {
+public class PersonagemListaFlex {
     public static void main(String[] args)  throws Exception{
         int fim = 0, op = 0;
         Scanner sc = new Scanner(System.in);
