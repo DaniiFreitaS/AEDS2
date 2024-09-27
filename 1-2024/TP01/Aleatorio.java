@@ -32,8 +32,8 @@ public class Aleatorio {
         while(fim == 0){
             x = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
             y = (char)('a' + (Math.abs(gerador.nextInt()) % 26));
-            MyIO.println(x);
-            MyIO.println(y);
+            //MyIO.println(x);
+            //MyIO.println(y);
             palavra = MyIO.readLine();
             if(isFIM(palavra))//se a palavra for fim, sai do loop e termina o programa
             fim = 1;

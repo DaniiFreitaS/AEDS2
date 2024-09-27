@@ -8,10 +8,17 @@ matricula 859230
 #include <string.h>
 #include <locale.h>
 
-int isPalindromo (unsigned char *s, int i){
-    int tam = strlen(s);
-    int resp = 1;
-    if(i < (tam)/2){
+int stringlen(char *s){
+    int i = 0;
+    while(s[i] != '\0'){
+        i++;
+    }
+    return i;
+}
+int isPalindromo (unsigned char *s){
+    int tam = stringlen(s);
+    
+    for(int i = 0; i < (tam)/2;i++){
         if(s[i] == 195){//testa se o caractere e' especial que usa 2 bytes pegando 2 posicoes, sempre sendo a primeira 195
             i++;//passa para o proximo byte do caractere especial
             if(s[i] != s[tam-i]){//tam-i para continuar no caractere a ser testado, tam-i-1 iria para o caractere 195
@@ -25,10 +32,11 @@ int isPalindromo (unsigned char *s, int i){
         }else if(s[i] != s[tam-i-1]){//testa se o caractere e' igual o outro
             return 0;
             }
-        i++;
-        resp = isPalindromo(s, i);//chama a funcao recursivamente ate i < tam/2 ou ate retornar 0
         }
-    return resp;
+    return 1;
+}
+int isFim(char *s){//funcao nao funciona no verde
+    return (stringlen(s) == 3 && s[0] == 'F' && s[1] == 'I' && s[2] == 'M');
 }
 
 int main(int argc, char *argv[]){
@@ -40,7 +48,7 @@ int main(int argc, char *argv[]){
         if(strcmp(palavra, "FIM") == 0)
           fim = 1;
         else{
-            if(isPalindromo(palavra, 0) == 1)
+            if(isPalindromo(palavra) == 1)
             printf("SIM\n");
             else
             printf("NAO\n");
