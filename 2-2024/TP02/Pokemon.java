@@ -80,15 +80,69 @@ class Pokemon {
     public void setCaptureDate(Date captureDate) {
         this.captureDate = captureDate;
     }
+    public Pokemon(int id, int generation, String name, String description, List<String> type, List<String> abilities,
+            double weight, double height, int capture_rate, boolean is_legendary, Date captureDate) {
+        this.id = id;
+        this.generation = generation;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.abilities = abilities;
+        this.weight = weight;
+        this.height = height;
+        this.capture_rate = capture_rate;
+        this.is_legendary = is_legendary;
+        this.captureDate = captureDate;
+    }
     public Pokemon(){
 
     }
+    public static String[] ler(String s){
+        //id,generation,name,description,type1,type2,abilities,weight_kg,height_m,capture_rate,is_legendary,capture_date
+        //1,1,Bulbasaur,Seed Pokémon,grass,poison,"['Overgrow', 'Chlorophyll']",6.9,0.7,45,0,05/01/1996
+        String[] saida = new String[12];
+        int sinal = 0;
+        int sentinelaLista = 0;
+        int tamanho = 0;
+        int i = 0;
+        String temp = "";
+        for(int k = 0; k < 12; k++){
+            saida[k] = "";
+        }
+        while(i < s.length()){
+            temp += s.charAt(i);
+            if(s.charAt(i) == '['){
+                sentinelaLista++;
+                i++;
+            }else if(s.charAt(i) == ']'){
+                sentinelaLista++;
+                i++;
+            }
+            if(s.charAt(i)== ','){
+                //System.out.println(temp);
+                if(sentinelaLista == 1){
+                    i++;
+                }else{
+                    sinal++;
+                    i++;
+                }
+            }else{
+                saida[sinal] += s.charAt(i);
+                i++;
+            }
+        }
+        return saida;
+    }
     public static void main(String[] args) {
         try {
-            File csv = new File("pokemon.csv");
+            File csv = new File("pokemonT.csv");
             Scanner sc = new Scanner(csv);
+            String[] entrada;
             while(sc.hasNext()){
-                System.out.println(sc.nextLine());
+                entrada = ler(sc.nextLine());
+                for(int i = 0; i < 12; i++){
+                    System.out.println(entrada[i]);
+                }
             }
             sc.close();
         } catch (Exception e) {
@@ -97,3 +151,10 @@ class Pokemon {
         
     }
 }
+/*
+else if (s.charAt(i) == '"'){
+                i++;
+            }else if (s.charAt(i) == 39){//caractere '
+                i++;
+            }
+ */
