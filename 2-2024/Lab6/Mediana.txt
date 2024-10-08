@@ -1,0 +1,2 @@
+Tempo para ordenar: 22040 ns.
+isOrdenado: true
