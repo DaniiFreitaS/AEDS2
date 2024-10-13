@@ -397,26 +397,94 @@ class Pokemon {
     }
     
 }
-class PokemonSequencial{
+class PokemonQuickParcial{
+    public static int compararString(String s1, String s2){
+        int resp = 0;
+        int i = 0;
+        int tam1 = s1.length();
+        int tam2 = s2.length();
+        int maior = tam1 - tam2;
+        int menor = (maior>=0) ? tam2 : tam1;
+        while(resp == 0 && i < menor){
+            if(s1.charAt(i) == s2.charAt(i)){//iguais
+                i++;
+            }else if(s1.charAt(i) > s2.charAt(i)){//string 1 maior
+                resp = 1;
+            }else if(s1.charAt(i) < s2.charAt(i)){//string 2 maior
+                resp = -1;
+            }
+        }
+        if(resp == 0){
+            if(maior == 0){//iguais
 
-    public static int comparacoes = 0;
-    public static boolean pesquisaSeq(int n, Pokemon[] p, String name){
-        boolean resp = false;
-        //comparacoes = 0;
-        for(int i = 0; i < n; i++){
-            comparacoes++;
-            if(p[i].getName().equals(name)){
-                resp = true;
-                i=n;
+            }else if(maior > 0){//string 1 maior
+                resp = 1;
+            }else{  //string 2 maior
+                resp = -1;
             }
         }
         return resp;
+    }
+
+    public static int comparacoes = 0;
+    public static int movimentacoes = 0;
+    public static void swap(Pokemon[] p, int i, int j){
+        Pokemon tmp = p[i];
+        p[i] = p[j];
+        p[j] = tmp;
+        movimentacoes+=3;
+    }
+    public static void selecao(int tam, Pokemon[] p){
+        int k = 10;
+        if(tam < k) k = tam;
+        for(int i = 0; i < k; i++){
+            int menor = i;
+            for(int j = i+1; j < tam; j++){
+                comparacoes++;
+                if(compararString(p[menor].getName(),p[j].getName()) > 0){
+                    menor = j;
+                }
+            }
+            swap(p, menor, i);
+        }
+    }
+    public static void quicksortRec(Pokemon[] array, int esq, int dir) {
+        int i = esq, j = dir;
+        int k = 10;
+        Pokemon pivo = array[dir];//escolha do pivo sendo dir, usando dir-esq /2 nao funciona corretamente
+    
+        while (i <= j) {
+            while (array[i].getGeneration() < pivo.getGeneration() ||
+                   (array[i].getGeneration() == pivo.getGeneration() && compararString(array[i].getName(), pivo.getName()) < 0)) {
+                i++;
+                comparacoes++;
+            }
+            while (array[j].getGeneration() > pivo.getGeneration() ||
+                   (array[j].getGeneration() == pivo.getGeneration() && compararString(array[j].getName(), pivo.getName()) > 0)) {
+                j--;
+                comparacoes++;
+            }
+    
+            if (i <= j) {
+                swap(array, i, j);
+                i++;
+                j--;
+                movimentacoes+=3;
+            }
+        }
+        if (esq < j) quicksortRec(array, esq, j);
+        if (i < k && i < dir) quicksortRec(array, i, dir);
+    }
+    
+    //=============================================================================
+    public static void quicksort(Pokemon[] array, int n) {
+        quicksortRec(array, 0, n-1);
     }
     
     public static void main(String[] args){
         try {
             long inicio = System.currentTimeMillis();
-            PrintWriter log = new PrintWriter("858230_sequencial.txt");
+            PrintWriter log = new PrintWriter("858230_quicksort-parcial.txt");
             
             File csv = new File("/tmp/pokemon.csv");
             Scanner sc = new Scanner(csv);
@@ -444,33 +512,13 @@ class PokemonSequencial{
                      entrada = sc.nextLine();
                 }
             }
-            fim = 0;
-            entrada = sc.nextLine();
-            while(fim == 0){
-                if(Pokemon.isFIM(entrada)){
-                    fim = 1;
-                    //sc.close();
-                }else{
-                     //entrada = sc.nextLine();
-                    if(pesquisaSeq(tamvet, vet, entrada)){
-                        System.out.println("SIM");
-                    }else{
-                        System.out.println("NAO");
-                    }
-                    entrada = sc.nextLine();
-                }
+            quicksort(vet, tamvet);
+            for(int i = 0; i < 10; i++){
+                vet[i].imprimir();
             }
-            //for(int i = 0; i < tamvet; i++){
-              //  entrada = sc.nextLine();
-                //if(pesquisaSeq(tamvet, vet, entrada)){
-                //    System.out.println("SIM");
-                //}else{
-                 //   System.out.println("NÃO");
-               // }
-            //}
             sc.close();
             long fimTempo = System.currentTimeMillis();
-            log.println("859230\t" + (fimTempo - inicio) + "\t" + comparacoes);
+            log.println("859230\t" + comparacoes + "\t" + movimentacoes + "\t" + (fimTempo - inicio));
             log.close();
         } catch (Exception e) {
             System.out.println("erro aqui");

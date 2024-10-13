@@ -191,6 +191,18 @@ class Lista {
        }
        return retorno;
     }
+    public String listaParaString(){
+        String resp = "";
+        for(int i = 0; i < n; i++){
+            resp+="'";
+            resp+=array[i];
+            resp+="'";
+          if(n > 1 && i < n-1){
+            resp+=",";
+          }
+       }
+        return resp;
+    }
  }
 
 class Pokemon {
@@ -397,26 +409,122 @@ class Pokemon {
     }
     
 }
-class PokemonSequencial{
+class PokemonMerge{
+    public static int compararString(String s1, String s2){
+        int resp = 0;
+        int i = 0;
+        int tam1 = s1.length();
+        int tam2 = s2.length();
+        int maior = tam1 - tam2;
+        int menor = (maior>=0) ? tam2 : tam1;
+        while(resp == 0 && i < menor){
+            if(s1.charAt(i) == s2.charAt(i)){//iguais
+                i++;
+            }else if(s1.charAt(i) > s2.charAt(i)){//string 1 maior
+                resp = 1;
+            }else if(s1.charAt(i) < s2.charAt(i)){//string 2 maior
+                resp = -1;
+            }
+        }
+        if(resp == 0){
+            if(maior == 0){//iguais
 
-    public static int comparacoes = 0;
-    public static boolean pesquisaSeq(int n, Pokemon[] p, String name){
-        boolean resp = false;
-        //comparacoes = 0;
-        for(int i = 0; i < n; i++){
-            comparacoes++;
-            if(p[i].getName().equals(name)){
-                resp = true;
-                i=n;
+            }else if(maior > 0){//string 1 maior
+                resp = 1;
+            }else{  //string 2 maior
+                resp = -1;
             }
         }
         return resp;
     }
+
+    public static int comparacoes = 0;
+    public static int movimentacoes = 0;
+    public static void swap(Pokemon[] p, int i, int j){
+        Pokemon tmp = p[i];
+        p[i] = p[j];
+        p[j] = tmp;
+        movimentacoes+=3;
+    }
+    public static void selecao(int tam, Pokemon[] p){
+        for(int i = 0; i < tam-1; i++){
+            int menor = i;
+            for(int j = i+1; j < tam; j++){
+                comparacoes++;
+                if(compararString(p[menor].getName(),p[j].getName()) > 0){
+                    menor = j;
+                }
+            }
+            swap(p, menor, i);
+        }
+    }
+    public static void mergesort(Pokemon[] array, int n) {
+        mergesort(array, 0, n - 1);
+    }
+    
+    private static void mergesort(Pokemon[] array, int esq, int dir) {
+        if (esq < dir) {
+            int meio = (esq + dir) / 2;
+            mergesort(array, esq, meio);
+            mergesort(array, meio + 1, dir);
+            intercalar(array, esq, meio, dir);
+        }
+    }
+    
+    public static void intercalar(Pokemon[] array, int esq, int meio, int dir) {
+        int n1 = meio - esq + 1;
+        int n2 = dir - meio;
+    
+        Pokemon[] a1 = new Pokemon[n1 + 1];
+        Pokemon[] a2 = new Pokemon[n2 + 1];
+    
+        // Inicializar o primeiro subarray
+        for (int i = 0; i < n1; i++) {
+            a1[i] = array[esq + i];
+            movimentacoes++;
+        }
+    
+        // Inicializar o segundo subarray
+        for (int j = 0; j < n2; j++) {
+            a2[j] = array[meio + j + 1];
+            movimentacoes++;
+        }
+    
+        // Sentinela no final dos dois arrays
+        a1[n1] = a2[n2] = null;
+    
+        // Intercalacao propriamente dita
+        int i = 0, j = 0;
+        for (int k = esq; k <= dir; k++) {
+            if (a1[i] != null && (a2[j] == null || comparePokemon(a1[i], a2[j]) <= 0)) {
+                array[k] = a1[i++];
+                comparacoes++;
+                movimentacoes++;
+            } else {
+                array[k] = a2[j++];
+                movimentacoes++;
+            }
+        }
+    }
+    
+    private static int comparePokemon(Pokemon p1, Pokemon p2) {
+        String a = p1.getType().listaParaString();
+        String b = p2.getType().listaParaString();
+        
+        int typeMaior = compararString(a, b);
+        if (typeMaior == 0) {//verificar se ambos types sao iguais para desempate
+            return compararString(p1.getName(), p2.getName());
+        } else {
+            return typeMaior;
+        }
+    }
+    
+
     
     public static void main(String[] args){
         try {
             long inicio = System.currentTimeMillis();
-            PrintWriter log = new PrintWriter("858230_sequencial.txt");
+            PrintWriter log = new PrintWriter("858230_mergesort.txt");
             
             File csv = new File("/tmp/pokemon.csv");
             Scanner sc = new Scanner(csv);
@@ -444,33 +552,13 @@ class PokemonSequencial{
                      entrada = sc.nextLine();
                 }
             }
-            fim = 0;
-            entrada = sc.nextLine();
-            while(fim == 0){
-                if(Pokemon.isFIM(entrada)){
-                    fim = 1;
-                    //sc.close();
-                }else{
-                     //entrada = sc.nextLine();
-                    if(pesquisaSeq(tamvet, vet, entrada)){
-                        System.out.println("SIM");
-                    }else{
-                        System.out.println("NAO");
-                    }
-                    entrada = sc.nextLine();
-                }
+            mergesort(vet, tamvet);
+            for(int i = 0; i < tamvet; i++){
+                vet[i].imprimir();
             }
-            //for(int i = 0; i < tamvet; i++){
-              //  entrada = sc.nextLine();
-                //if(pesquisaSeq(tamvet, vet, entrada)){
-                //    System.out.println("SIM");
-                //}else{
-                 //   System.out.println("NÃO");
-               // }
-            //}
             sc.close();
             long fimTempo = System.currentTimeMillis();
-            log.println("859230\t" + (fimTempo - inicio) + "\t" + comparacoes);
+            log.println("859230\t" + comparacoes + "\t" + movimentacoes + "\t" + (fimTempo - inicio));
             log.close();
         } catch (Exception e) {
             System.out.println("erro aqui");

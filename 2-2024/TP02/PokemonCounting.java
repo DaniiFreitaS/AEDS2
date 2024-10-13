@@ -397,26 +397,196 @@ class Pokemon {
     }
     
 }
-class PokemonSequencial{
+class PokemonCounting{
+    public static int compararString(String s1, String s2){
+        int resp = 0;
+        int i = 0;
+        int tam1 = s1.length();
+        int tam2 = s2.length();
+        int maior = tam1 - tam2;
+        int menor = (maior>=0) ? tam2 : tam1;
+        while(resp == 0 && i < menor){
+            if(s1.charAt(i) == s2.charAt(i)){//iguais
+                i++;
+            }else if(s1.charAt(i) > s2.charAt(i)){//string 1 maior
+                resp = 1;
+            }else if(s1.charAt(i) < s2.charAt(i)){//string 2 maior
+                resp = -1;
+            }
+        }
+        if(resp == 0){
+            if(maior == 0){//iguais
 
-    public static int comparacoes = 0;
-    public static boolean pesquisaSeq(int n, Pokemon[] p, String name){
-        boolean resp = false;
-        //comparacoes = 0;
-        for(int i = 0; i < n; i++){
-            comparacoes++;
-            if(p[i].getName().equals(name)){
-                resp = true;
-                i=n;
+            }else if(maior > 0){//string 1 maior
+                resp = 1;
+            }else{  //string 2 maior
+                resp = -1;
             }
         }
         return resp;
     }
+
+    public static int comparacoes = 0;
+    public static int movimentacoes = 0;
+    public static void swap(Pokemon[] p, int i, int j){
+        Pokemon tmp = p[i];
+        p[i] = p[j];
+        p[j] = tmp;
+        movimentacoes+=3;
+    }
+    public static void selecao(int tam, Pokemon[] p){
+        for(int i = 0; i < tam-1; i++){
+            int menor = i;
+            for(int j = i+1; j < tam; j++){
+                comparacoes++;
+                if(compararString(p[menor].getName(),p[j].getName()) > 0){
+                    menor = j;
+                }
+            }
+            swap(p, menor, i);
+        }
+    }
+    public static void insercao(int tam, Pokemon[] p){
+        for(int i = 1; i < tam; i++){
+            Pokemon tmp = p[i];
+            int j = i - 1;
+            while(j >=0 && p[j].getCaptureDate().compareTo(tmp.getCaptureDate()) > 0){
+                p[j+1] = p[j];
+                j--;
+                movimentacoes++;
+                comparacoes++;
+            }
+            p[j+1] = tmp;
+        }
+    }
+    public static Pokemon[] heapsort(int n, Pokemon[] array) {
+        // Alterar o vetor ignorando a posicao zero
+        Pokemon[] tmp = new Pokemon[n + 1];
+        for (int i = 0; i < n; i++) {
+            tmp[i + 1] = array[i];
+            movimentacoes++;
+        }
+        array = tmp;
+    
+        // Construcao do heap
+        for (int tamHeap = 2; tamHeap <= n; tamHeap++) {
+            construir(tamHeap, array);
+        }
+    
+        // Ordenacao propriamente dita
+        int tamHeap = n;
+        while (tamHeap > 1) {
+            swap(array, 1, tamHeap--);
+            reconstruir(tamHeap, array);
+        }
+    
+        // Alterar o vetor para voltar a posicao zero
+        tmp = array;
+        array = new Pokemon[n];
+        for (int i = 0; i < n; i++) {
+            array[i] = tmp[i + 1];
+            movimentacoes++;
+        }
+        return array;
+    }
+    
+    public static void construir(int tamHeap, Pokemon[] array) {
+        for (int i = tamHeap; i > 1 && comparePokemon(array[i], array[i / 2]) > 0; i /= 2) {
+            swap(array, i, i / 2);
+        }
+    }
+    
+    public static void reconstruir(int tamHeap, Pokemon[] array) {
+        int i = 1;
+        while (i <= (tamHeap / 2)) {
+            int filho = getMaiorFilho(i, tamHeap, array);
+            if (comparePokemon(array[i], array[filho]) < 0) {
+                swap(array, i, filho);
+                i = filho;
+            } else {
+                i = tamHeap;
+            }
+        }
+    }
+    
+    public static int getMaiorFilho(int i, int tamHeap, Pokemon[] array) {
+        int filho;
+        if (2 * i == tamHeap || comparePokemon(array[2 * i], array[2 * i + 1]) > 0) {
+            filho = 2 * i;
+        } else {
+            filho = 2 * i + 1;
+        }
+        return filho;
+    }
+    
+    // Função de comparação que usa altura e nome para critério de desempate
+    public static int comparePokemon(Pokemon p1, Pokemon p2) {
+        comparacoes++;
+        if (p1.getHeight() > p2.getHeight()) {
+            return 1;
+        } else if (p1.getHeight() < p2.getHeight()) {
+            return -1;
+        } else {
+            return compararString(p1.getName(), p2.getName());  // Desempate por nome
+        }
+    }
+    public static void countingSort(int n, Pokemon[] p) {
+        // Array para contar o número de ocorrências de cada captureRate
+        int[] count = new int[getMaior(n, p) + 1];
+        Pokemon[] ordenado = new Pokemon[n];
+    
+        // Inicializar cada posição do array de contagem
+        for (int i = 0; i < count.length; i++) {
+            count[i] = 0;
+        }
+    
+        // Agora, o count[i] contém o número de Pokémons com captureRate igual a i
+        for (int i = 0; i < n; i++) {
+            count[p[i].getCapture_rate()]++;
+        }
+    
+        // Agora, o count[i] contém o número de Pokémons com captureRate menor ou igual a i
+        for (int i = 1; i < count.length; i++) {
+            count[i] += count[i - 1];
+        }
+    
+        // Ordenando com base no captureRate
+        for (int i = n - 1; i >= 0; i--) {
+            int cr = p[i].getCapture_rate();
+            ordenado[count[cr] - 1] = p[i];
+            count[cr]--;
+            movimentacoes++;
+        }
+    
+        // Copiando o array ordenado de volta para o array original
+        for (int i = 0; i < n; i++) {
+            movimentacoes++;
+            p[i] = ordenado[i];
+            //p[i].imprimir();
+        }
+    }
+    
+     /**
+      * Retorna o maior captureRate entre os Pokémons.
+      * @return maior captureRate
+      */
+    public static int getMaior(int n, Pokemon[] p) {
+        int maior = p[0].getCapture_rate();
+        for (int i = 1; i < n; i++) {
+            comparacoes++;
+            if (maior < p[i].getCapture_rate()) {
+                maior = p[i].getCapture_rate();
+            }
+        }
+        return maior;
+    }
+    
+    
     
     public static void main(String[] args){
         try {
             long inicio = System.currentTimeMillis();
-            PrintWriter log = new PrintWriter("858230_sequencial.txt");
+            PrintWriter log = new PrintWriter("858230_countingsort.txt");
             
             File csv = new File("/tmp/pokemon.csv");
             Scanner sc = new Scanner(csv);
@@ -444,33 +614,14 @@ class PokemonSequencial{
                      entrada = sc.nextLine();
                 }
             }
-            fim = 0;
-            entrada = sc.nextLine();
-            while(fim == 0){
-                if(Pokemon.isFIM(entrada)){
-                    fim = 1;
-                    //sc.close();
-                }else{
-                     //entrada = sc.nextLine();
-                    if(pesquisaSeq(tamvet, vet, entrada)){
-                        System.out.println("SIM");
-                    }else{
-                        System.out.println("NAO");
-                    }
-                    entrada = sc.nextLine();
-                }
+            selecao(tamvet, vet);//algoritmo de selecao é chamado para ordenar por nome para quando der empate no countingsort
+            countingSort(tamvet, vet);
+            for(int i = 0; i < tamvet; i++){
+                vet[i].imprimir();
             }
-            //for(int i = 0; i < tamvet; i++){
-              //  entrada = sc.nextLine();
-                //if(pesquisaSeq(tamvet, vet, entrada)){
-                //    System.out.println("SIM");
-                //}else{
-                 //   System.out.println("NÃO");
-               // }
-            //}
             sc.close();
             long fimTempo = System.currentTimeMillis();
-            log.println("859230\t" + (fimTempo - inicio) + "\t" + comparacoes);
+            log.println("859230\t" + comparacoes + "\t" + movimentacoes + "\t" + (fimTempo - inicio));
             log.close();
         } catch (Exception e) {
             System.out.println("erro aqui");
