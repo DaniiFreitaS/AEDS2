@@ -508,26 +508,11 @@ int main(int argc, char** argv) {
     Pokemon* tmp;
     for(int i = 0; i < fim; i++){
         scanf(" %s", entrada);
-        if(strcmp(entrada, "II") == 0){
-            scanf(" %s", entrada);
-            inserirInicioL(p[toInt(entrada)-1]);
-        }else if(strcmp(entrada, "IF") == 0){
+        if(strcmp(entrada, "I") == 0){
             scanf(" %s", entrada);
             inserirFimL(p[toInt(entrada)-1]);
-        }else if(strcmp(entrada, "I*") == 0){
-            int pos = 0;
-            scanf(" %d", &pos);
-            scanf(" %s", entrada);
-            inserirL(p[toInt(entrada)-1], pos);
-        }else if(strcmp(entrada, "RI") == 0){
-            tmp = removerInicioL();
-            printf("(R) %s\n", tmp->name);
-        }else if(strcmp(entrada, "RF") == 0){
+        }else if(strcmp(entrada, "R") == 0){
             tmp = removerFimL();
-            printf("(R) %s\n", tmp->name);
-        }else if(strcmp(entrada, "R*") == 0){
-            scanf(" %s", entrada);
-            tmp = removerL(toInt(entrada));
             printf("(R) %s\n", tmp->name);
         }
     }
