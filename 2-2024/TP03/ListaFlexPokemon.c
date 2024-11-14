@@ -473,7 +473,7 @@ bool pesquisarL(Pokemon x) {
 }
 
 int main(int argc, char** argv) {
-    FILE *raw = fopen("/tmp/pokemon.csv", "r");//abre arquivo csv
+    FILE *raw = fopen("pokemon.csv", "r");//abre arquivo csv
     char str[802][500];//vetor de string com os valores do csv
     Pokemon pokemon[801];//cria vetor de pokemon para guardar todos
     Pokemon *p[801];//cria vetor de ponteiros para pokemon
