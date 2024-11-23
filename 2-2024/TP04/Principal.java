@@ -178,17 +178,13 @@ class ArvoreBinaria {
 	private No inserir(int x, No i) throws Exception {
 		if (i == null) {
          i = new No(x);
-
       } else if (x < i.elemento) {
          i.esq = inserir(x, i.esq);
-
       } else if (x > i.elemento) {
          i.dir = inserir(x, i.dir);
-
       } else {
          throw new Exception("Erro ao inserir!");
       }
-
 		return i;
 	}
 
@@ -232,6 +228,30 @@ class ArvoreBinaria {
       }
 	}
 
+
+	public void inserirI(int x) throws Exception{
+		if(raiz == null){
+			raiz = new No(x);
+		}else{
+			No i = raiz;
+			No pai = null;
+			while (i != null) {
+				pai = i;
+				if(x < i.elemento){
+					i = i.esq;
+				}else if(x > i.elemento){
+					i = i.dir;
+				}else{
+					throw new Exception("Erro ao inserir");
+				}
+			}
+			if(x < pai.elemento){
+				pai.esq = new No(x);
+			}else{
+				pai.dir = new No(x);
+			}
+		}
+	}
 
 	/**
 	 * Metodo publico iterativo para remover elemento.
@@ -464,11 +484,12 @@ public class Principal {
     public static void main(String[] args) throws Exception {
         ArvoreBinaria arvoreBinaria = new ArvoreBinaria();
         for(int i=1; i<30; i++){
-            arvoreBinaria.inserir(i);
+            arvoreBinaria.inserirI(i);
             //System.out.print("No. nos: " + i);
             //System.out.print("\t Altura: " + arvoreBinaria.getAltura());
             //System.out.println("\t log(2): " + Math.log(i)/Math.log(2));
         }
 		System.out.println(arvoreBinaria.pesquisaI(2));
+		arvoreBinaria.caminharCentral();
     }
 }
