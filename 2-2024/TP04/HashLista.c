@@ -423,7 +423,6 @@ bool pesquisarL(ListaPokemon* lista, char *x) {
     for (Celula* i = lista->primeiro->prox; i != NULL; i = i->prox, j++) {
         comparacoes++;
         if (strcmp(i->elemento->name, x) == 0) {
-            printf("(Posicao: %d) ", j);
             i = lista->ultimo;
             resp = true;
         }
@@ -517,6 +516,7 @@ void pesquisarH(char *s){
     printf("=> %s: ", s);
     resp = pesquisarL(tabela.elemento[pos], s);
     if(resp){
+        printf("(Posicao: %d) ", pos);
         printf("SIM\n");
     }else{
         printf("NAO\n");
